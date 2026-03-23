@@ -10,12 +10,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+/*
+Carrega banco local de frases
+*/
 const banco = {
-  trabalho: JSON.parse(fs.readFileSync("./frases/trabalho.json")),
-  vida_pessoal: JSON.parse(fs.readFileSync("./frases/vida_pessoal.json")),
-  vida_amorosa: JSON.parse(fs.readFileSync("./frases/vida_amorosa.json"))
+  trabalho: JSON.parse(
+    fs.readFileSync("./frases/trabalho.json")
+  ),
+  vida_pessoal: JSON.parse(
+    fs.readFileSync("./frases/vida_pessoal.json")
+  ),
+  vida_amorosa: JSON.parse(
+    fs.readFileSync("./frases/vida_amorosa.json")
+  )
 };
 
+/*
+Endpoint principal
+*/
 app.post("/mensagem", (req, res) => {
 
   const { tipo } = req.body;
@@ -30,19 +42,25 @@ app.post("/mensagem", (req, res) => {
 
   }
 
-  const diaDoAno = Math.floor(
-    (new Date() - new Date(new Date().getFullYear(), 0, 0)) /
-    86400000
-  );
+  /*
+  Seleciona frase aleatória
+  */
+  const indiceAleatorio =
+    Math.floor(Math.random() * lista.length);
 
-  const mensagem = lista[diaDoAno % lista.length];
+  const mensagem = lista[indiceAleatorio];
 
   res.json({ mensagem });
 
 });
 
-app.listen(3000, () => {
+/*
+Compatibilidade com Render
+*/
+const PORT = process.env.PORT || 3000;
 
-  console.log("Servidor rodando em http://localhost:3000");
+app.listen(PORT, () => {
+
+  console.log(`Servidor rodando na porta ${PORT}`);
 
 });
