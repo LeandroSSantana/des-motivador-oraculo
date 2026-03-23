@@ -22,6 +22,9 @@ const banco = {
   ),
   vida_amorosa: JSON.parse(
     fs.readFileSync("./frases/vida_amorosa.json")
+  ),
+  vida_sexual: JSON.parse(
+    fs.readFileSync("./frases/vida_sexual.json")
   )
 };
 
