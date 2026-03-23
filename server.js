@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 /*
-Carrega banco local de frases
+Banco local de frases
 */
 const banco = {
   trabalho: JSON.parse(
@@ -23,6 +23,15 @@ const banco = {
   vida_amorosa: JSON.parse(
     fs.readFileSync("./frases/vida_amorosa.json")
   )
+};
+
+/*
+Memória simples anti-repetição
+*/
+const ultimaFrasePorTipo = {
+  trabalho: null,
+  vida_pessoal: null,
+  vida_amorosa: null
 };
 
 /*
@@ -42,20 +51,28 @@ app.post("/mensagem", (req, res) => {
 
   }
 
-  /*
-  Seleciona frase aleatória
-  */
-  const indiceAleatorio =
-    Math.floor(Math.random() * lista.length);
+  let mensagem;
 
-  const mensagem = lista[indiceAleatorio];
+  do {
+
+    const indiceAleatorio =
+      Math.floor(Math.random() * lista.length);
+
+    mensagem = lista[indiceAleatorio];
+
+  } while (
+    mensagem === ultimaFrasePorTipo[tipo]
+    && lista.length > 1
+  );
+
+  ultimaFrasePorTipo[tipo] = mensagem;
 
   res.json({ mensagem });
 
 });
 
 /*
-Compatibilidade com Render
+Compatibilidade Render
 */
 const PORT = process.env.PORT || 3000;
 
